@@ -1,0 +1,6 @@
+.env
+__pycache__
+music/*
+!music/.gitkeep
+tweets/*
+!tweets/.gitkeep
