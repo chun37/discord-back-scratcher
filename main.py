@@ -33,7 +33,6 @@ class MyBot(commands.Bot):
                 traceback.print_exc()
 
         self.exit_signal = None
-        print(self._checks)
 
     async def on_ready(self):
         print(self.user.name)
