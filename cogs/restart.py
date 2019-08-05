@@ -1,5 +1,6 @@
-from discord.ext import commands
 import exceptions
+
+from discord.ext import commands
 
 
 class Restart(commands.Cog):

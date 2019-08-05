@@ -1,5 +1,5 @@
-from discord.ext import commands
 import random
+from discord.ext import commands
 
 
 class Choose(commands.Cog):
@@ -7,7 +7,7 @@ class Choose(commands.Cog):
         self.bot = bot
 
     @commands.command(aliases=["random"])
-    async def chooseOneFrom(self, ctx, *options):
+    async def choose_one_from(self, ctx, *options):
         result = random.choice(options)
         await ctx.send(result)
 

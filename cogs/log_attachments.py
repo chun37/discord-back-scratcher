@@ -1,7 +1,8 @@
 import os
+
 from discord.ext import commands
 
-LOG_DIR = "D:/discord-log/"
+LOG_DIR = os.getenv("LOG_DIR")
 
 
 class LogAttachments(commands.Cog):

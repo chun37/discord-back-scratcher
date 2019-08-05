@@ -1,5 +1,5 @@
-from discord.ext import commands
 import os
+
 
 def is_not_bot(ctx):
     if ctx.guild.id == int(os.getenv("TEST_SERVER_ID")):

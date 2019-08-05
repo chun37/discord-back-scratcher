@@ -2,10 +2,10 @@ import queue
 import functools
 from collections import defaultdict
 
-import discord
-import aiosqlite
+from discord import Embed, FFmpegPCMAudio
 from discord.ext import commands
 
+from utils import fetch_async
 from models import LocalMusicItem
 from cogs.localcheck import exists_voice_client
 
@@ -32,29 +32,23 @@ class Music(commands.Cog):
         self.queues_list[ctx.guild.id].remove(item)
         return item
 
-    async def _fetch_async(self, fetch_type, query):
-        async with aiosqlite.connect('./music/localdata.db') as con:
-            async with con.execute(query) as cur:
-                if fetch_type == "one":
-                    row = await cur.fetchone()
-                elif fetch_type == "all":
-                    row = await cur.fetchall()
-        return row
-
     @commands.group()
     async def music(self, ctx):
         pass
 
     @music.command(aliases=["play"])
     @commands.check(exists_voice_client)
-    async def music_play(self, ctx, id_or_url):
-        query = f"select * from local_music where id == {id_or_url}"
-        _, title, artist, path = await self._fetch_async("one", query)
+    async def music_play(self, ctx, text):
+        if not text.isdecimal():
+            return
+        query = f"select * from local_music where id == {text}"
+        _, title, artist, path = await fetch_async("one", query)
         item = LocalMusicItem(
             title=title,
             artist=artist,
             path=path,
-            added=ctx.author)
+            added=ctx.author
+        )
         self._add_queue(ctx, item)
         voice_client = ctx.guild.voice_client
         if voice_client.is_playing():
@@ -72,7 +66,7 @@ class Music(commands.Cog):
             return
         if not item.path:
             return
-        source = discord.FFmpegPCMAudio(item.path)
+        source = FFmpegPCMAudio(item.path)
         self.nowplaying[ctx.guild.id] = item
         voice_client.play(
             source, after=functools.partial(self._play_after, ctx))
@@ -117,21 +111,22 @@ class Music(commands.Cog):
     @music.command(aliases=["queue"])
     async def music_queue(self, ctx):
         queue = self.queues_list[ctx.guild.id]
-        embed = discord.Embed(title="Queue")
+        embed = Embed()
         if not queue:
-            embed.title = ""
             embed.add_field(
                 name="Queue",
                 value="no music item"
             )
             return await ctx.send(embed=embed)
         for index, item in enumerate(queue[:10]):
+            embed.title = "Queue"
             embed.add_field(
                 name=f"{index}:",
                 value=f"""Title: **{item.title}**
                 Artist: **{item.artist}**
                 added by `{item.added.name}`""",
-                inline=False)
+                inline=False
+            )
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["nowplaying", "np"])
@@ -143,10 +138,10 @@ class Music(commands.Cog):
         return await ctx.send(embed=embed)
 
     def get_embed_nowplaying(self, item, is_np=True):
-        embed = discord.Embed()
+        embed = Embed()
         embed.title = ""
         embed.add_field(
-            name="NowPlaying" if is_np else "added to queue" ,
+            name="NowPlaying" if is_np else "added to queue",
             value=f"""Title: **{item.title}**
                 Artist: **{item.artist}**
                 added by `{item.added.name}`""",

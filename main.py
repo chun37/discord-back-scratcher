@@ -19,6 +19,7 @@ INITIAL_COGS = [
     "cogs.voice",
     "cogs.restart",
     "cogs.music",
+    "cogs.search",
 ]
 
 

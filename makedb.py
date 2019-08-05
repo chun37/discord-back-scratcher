@@ -5,6 +5,9 @@ import sqlite3
 import functools
 
 import mutagen
+import dotenv
+
+dotenv.load_dotenv()
 
 MUSIC_FILE_EXTENTIONS = [
     "m4a",
@@ -15,20 +18,18 @@ MUSIC_FILE_DIRECTORY = [
 ]
 
 ITUNES_MUSIC_DIRECTORY = [
-    "C:/Users/chun/Music/iTunes/iTunes Media/Music/"
+    # "C:/Users/chun/Music/iTunes/iTunes Media/Music/"
 ]
 
-DB_NAME = "./music/localdata.db"
+ITUNES_MUSIC_DIRECTORY += os.getenv("ITUNES_PATH").split(",")
+
+DB_NAME = os.getenv("MUSIC_DB")
 
 META_DATA = {
     "m4a": {"title": "\xa9nam", "artist": "\xa9ART"}
 }
 
 TRACK_PATTERN = re.compile(r"[^\d+\s].+(?=\.)")
-
-
-def add_database(title: str, artist: str, path: str):
-    print(title, artist, path)
 
 
 def get_file_extention(path: str) -> str:
