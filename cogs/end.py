@@ -10,6 +10,9 @@ class End(commands.Cog):
     @commands.is_owner()
     async def end(self, ctx):
         await ctx.message.add_reaction('\N{WAVING HAND SIGN}')
+        voice_client = ctx.guild.voice_client
+        if bool(voice_client):
+            await voice_client.disconnect()
         self.bot.exit_signal = exceptions.EndSignal()
         await self.bot.logout()
 

@@ -7,7 +7,6 @@ class Echo(commands.Cog):
 
     @commands.command()
     async def echo(self, ctx, *text):
-        print(ctx.author.id)
         await ctx.send(ctx.message.content[6:])
 
 

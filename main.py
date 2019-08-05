@@ -18,6 +18,7 @@ INITIAL_COGS = [
     "cogs.log_attachments",
     "cogs.voice",
     "cogs.restart",
+    "cogs.music",
 ]
 
 
