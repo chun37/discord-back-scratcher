@@ -5,6 +5,7 @@ import glob
 from models import MusicQueue, MusicItem
 from collections import defaultdict
 
+
 def exists_voice_client(ctx):
     return bool(ctx.guild.voice_client)
 
@@ -30,7 +31,6 @@ class VoiceChat(commands.Cog):
 
     async def _get_queue(self, guild_id):
         pass
-
 
     def _get_voice_client(self, guild_id):
         return self.bot.get_guild(guild_id).voice_client
@@ -99,7 +99,6 @@ class VoiceChat(commands.Cog):
     async def vc_queue(self, ctx):
         print(self.queues[ctx.guild.id])
         pass
-
 
 
 def setup(bot):
