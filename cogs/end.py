@@ -1,5 +1,5 @@
-from discord.ext import commands
 import exceptions
+from discord.ext import commands
 
 
 class End(commands.Cog):

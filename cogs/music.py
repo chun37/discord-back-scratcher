@@ -15,7 +15,7 @@ class Music(commands.Cog):
         self.bot = bot
         self.queues = defaultdict(lambda: queue.Queue())
         self.queues_list = defaultdict(list)
-        self.nowplaying = defaultdict(lambda: LocalMusicItem())
+        self.nowplaying = {}
 
     def _add_queue(self, ctx, item):
         self.queues[ctx.guild.id].put(item)
@@ -26,7 +26,7 @@ class Music(commands.Cog):
         return self.queues_list[ctx.guild.id]
 
     def _get_queue(self, ctx):
-        if len(self.queues_list[ctx.guild.id]) == 0:
+        if not self.queues_list[ctx.guild.id]:
             return
         item = self.queues[ctx.guild.id].get_nowait()
         self.queues_list[ctx.guild.id].remove(item)
@@ -60,9 +60,8 @@ class Music(commands.Cog):
         if voice_client.is_playing():
             return
         self._cmd_play(ctx)
-
-    def _play_after(self, *args):
-        self._cmd_play(args[0])
+        embed = self.get_embed_nowplaying(playing)
+        return await ctx.send(embed=embed)
 
     def _cmd_play(self, ctx):
         voice_client = ctx.guild.voice_client
@@ -71,9 +70,17 @@ class Music(commands.Cog):
         except Exception as e:
             print(e)
             return
+        if not item.path:
+            return
         source = discord.FFmpegPCMAudio(item.path)
+        self.nowplaying[ctx.guild.id] = item
         voice_client.play(
             source, after=functools.partial(self._play_after, ctx))
+
+    def _play_after(self, *args):
+        ctx = args[0]
+        del self.nowplaying[ctx.guild.id]
+        self._cmd_play(ctx)
 
     @music.command(aliases=["pause"])
     @commands.check(exists_voice_client)
@@ -99,10 +106,54 @@ class Music(commands.Cog):
             return
         voice_client.stop()
 
+    @music.command(aliases=["skip"])
+    @commands.check(exists_voice_client)
+    async def music_skip(self, ctx):
+        voice_client = ctx.guild.voice_client
+        if voice_client.is_playing():
+            voice_client.stop()
+        self._cmd_play(ctx)
+        embed = self.get_embed_nowplaying(playing)
+        return await ctx.send(embed=embed)
+
     @music.command(aliases=["queue"])
     async def music_queue(self, ctx):
-        print(self.queues[ctx.guild.id])
-        pass
+        queue = self.queues_list[ctx.guild.id]
+        embed = discord.Embed(title="Queue")
+        if not queue:
+            embed.title = ""
+            embed.add_field(
+                name="Queue",
+                value="no music item"
+            )
+            return await ctx.send(embed=embed)
+        for index, item in enumerate(queue[:10]):
+            embed.add_field(
+                name=f"{index}:",
+                value=f"""Title: **{item.title}**
+                Artist: **{item.artist}**
+                added by `{item.added.name}`""",
+                inline=False)
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["nowplaying", "np"])
+    async def now_playing(self, ctx):
+        if ctx.guild.id not in self.nowplaying:
+            return
+        playing = self.nowplaying[ctx.guild.id]
+        embed = self.get_embed_nowplaying(playing)
+        return await ctx.send(embed=embed)
+
+    def get_embed_nowplaying(self, item):
+        embed = discord.Embed()
+        embed.title = ""
+        embed.add_field(
+            name="NowPlaying",
+            value=f"""Title: **{item.title}**
+                Artist: **{item.artist}**
+                added by `{item.added.name}`""",
+        )
+        return embed
 
 
 def setup(bot):
