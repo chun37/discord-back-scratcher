@@ -60,7 +60,7 @@ class Music(commands.Cog):
         if voice_client.is_playing():
             return
         self._cmd_play(ctx)
-        embed = self.get_embed_nowplaying(playing)
+        embed = self.get_embed_nowplaying(item, False)
         return await ctx.send(embed=embed)
 
     def _cmd_play(self, ctx):
@@ -113,8 +113,6 @@ class Music(commands.Cog):
         if voice_client.is_playing():
             voice_client.stop()
         self._cmd_play(ctx)
-        embed = self.get_embed_nowplaying(playing)
-        return await ctx.send(embed=embed)
 
     @music.command(aliases=["queue"])
     async def music_queue(self, ctx):
@@ -144,11 +142,11 @@ class Music(commands.Cog):
         embed = self.get_embed_nowplaying(playing)
         return await ctx.send(embed=embed)
 
-    def get_embed_nowplaying(self, item):
+    def get_embed_nowplaying(self, item, is_np=True):
         embed = discord.Embed()
         embed.title = ""
         embed.add_field(
-            name="NowPlaying",
+            name="NowPlaying" if is_np else "added to queue" ,
             value=f"""Title: **{item.title}**
                 Artist: **{item.artist}**
                 added by `{item.added.name}`""",
