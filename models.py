@@ -1,10 +1,11 @@
 import queue
 import dataclasses
+from typing import Any
 
 @dataclasses.dataclass
 class MusicQueue:
     json: list = dataclasses.field(default_factory=list)
-    queue: any = queue.Queue()
+    queue: Any = queue.Queue()
 
     def _put(self, item):
         self.queue.put(item)
