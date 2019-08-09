@@ -10,7 +10,7 @@ import dotenv
 dotenv.load_dotenv()
 
 MUSIC_FILE_EXTENTIONS = [
-    "m4a",
+    "m4a", "mp3"
 ]
 
 MUSIC_FILE_DIRECTORY = [
@@ -26,7 +26,8 @@ ITUNES_MUSIC_DIRECTORY += os.getenv("ITUNES_PATH").split(",")
 DB_NAME = os.getenv("MUSIC_DB")
 
 META_DATA = {
-    "m4a": {"title": "\xa9nam", "artist": "\xa9ART"}
+    "m4a": {"title": "\xa9nam", "artist": "\xa9ART"},
+    "mp3": {"title": "TIT2", "artist": "TPE1"}
 }
 
 TRACK_PATTERN = re.compile(r"[^\d+\s].+(?=\.)")
