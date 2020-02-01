@@ -1,8 +1,9 @@
 import re
-from discord.ext import commands
-from discord import Webhook, AsyncWebhookAdapter
-import aiohttp
 from urllib.parse import urlparse
+
+import aiohttp
+from discord import AsyncWebhookAdapter, Webhook
+from discord.ext import commands
 
 AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp/\S+?/dp/\S{10}")
 
