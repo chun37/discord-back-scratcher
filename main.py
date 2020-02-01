@@ -1,6 +1,6 @@
+import asyncio
 import os
 import traceback
-import asyncio
 
 import dotenv
 from discord.ext import commands
@@ -8,18 +8,19 @@ from discord.ext import commands
 dotenv.load_dotenv()
 
 INITIAL_COGS = [
+    "cogs.amazon_link",
     "cogs.check",
-    "cogs.gacha",
     "cogs.choose",
-    "cogs.end",
     'cogs.echo',
+    "cogs.end",
+    "cogs.gacha",
+    "cogs.log_attachments",
+    "cogs.music",
+    "cogs.restart",
+    "cogs.search",
     "cogs.sticker",
     "cogs.tweet_image",
-    "cogs.log_attachments",
     "cogs.voice",
-    "cogs.restart",
-    "cogs.music",
-    "cogs.search",
 ]
 
 
