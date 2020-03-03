@@ -54,12 +54,13 @@ class AmazonShortLink(commands.Cog):
         sender = message.author
         sender_avatar_url = sender.avatar_url
         sender_name = sender.display_name
+        new_message = message.content
 
         await message.delete()
 
         for url in AMAZON_URL_PATTERN.findall(message.content):
             shorten_url = await self.get_shorten_url(url)
-            new_message = message.content.replace(url, shorten_url)
+            new_message = new_message.replace(url, shorten_url)
         await self.send_message(
             new_message, sender_name, sender_avatar_url, channel_webhook.url
         )
