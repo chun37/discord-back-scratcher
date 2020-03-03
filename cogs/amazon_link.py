@@ -9,16 +9,15 @@ AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp/\S+?/dp/\S{10}")
 
 
 class AmazonShortLink(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
     async def send_message(self, text, username, avatar_url, webhook_url):
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
-                webhook_url, adapter=AsyncWebhookAdapter(session))
-            await webhook.send(
-                text, username=username, avatar_url=avatar_url)
+                webhook_url, adapter=AsyncWebhookAdapter(session)
+            )
+            await webhook.send(text, username=username, avatar_url=avatar_url)
 
     async def get_or_create_webhook(self, channel):
         webhooks = await channel.webhooks()
@@ -30,8 +29,7 @@ class AmazonShortLink(commands.Cog):
 
         avatar_bytes = await self.bot.user.avatar_url.read()
 
-        mywebhook = await channel.create_webhook(
-            name="kaede-bot", avatar=avatar_bytes)
+        mywebhook = await channel.create_webhook(name="kaede-bot", avatar=avatar_bytes)
 
         return mywebhook
 
@@ -61,11 +59,10 @@ class AmazonShortLink(commands.Cog):
 
         for url in AMAZON_URL_PATTERN.findall(message.content):
             shorten_url = await self.get_shorten_url(url)
-            await self.send_message(
-                shorten_url,
-                sender_name,
-                sender_avatar_url,
-                channel_webhook.url)
+            new_message = message.content.replace(url, shorten_url)
+        await self.send_message(
+            new_message, sender_name, sender_avatar_url, channel_webhook.url
+        )
 
 
 def setup(bot):
