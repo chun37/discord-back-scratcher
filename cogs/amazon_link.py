@@ -37,7 +37,7 @@ class AmazonShortLink(commands.Cog):
         parsed_url = urlparse(url)
 
         dp_index = parsed_url.path.find("/dp")
-        dp_path = parsed_url.path[dp_index:]
+        dp_path = parsed_url.path[dp_index : dp_index + 14]
 
         replaced_url = parsed_url._replace(path=dp_path, query="")
         shorten_url = replaced_url.geturl()
