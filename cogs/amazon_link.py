@@ -5,7 +5,7 @@ import aiohttp
 from discord import AsyncWebhookAdapter, Webhook
 from discord.ext import commands
 
-AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp/\S+?/dp/\S{10}\S+")
+AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp/\S+?/dp/\S{10}\S*")
 
 
 class AmazonShortLink(commands.Cog):
