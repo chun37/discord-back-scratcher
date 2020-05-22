@@ -23,7 +23,6 @@ class AmazonShortLink(commands.Cog):
 
     async def get_or_create_webhook(self, channel):
         webhooks = await channel.webhooks()
-        my_webhook = None
         for webhook in webhooks:
             if webhook.user.id != self.bot.user.id:
                 continue
