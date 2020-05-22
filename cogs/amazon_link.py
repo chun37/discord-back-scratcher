@@ -1,20 +1,11 @@
+import re
 from urllib.parse import urlparse
 
 import aiohttp
 from discord import AsyncWebhookAdapter, Embed, Webhook
 from discord.ext import commands
-from verbalexpressions import VerEx
 
-verbal_expression = VerEx()
-AMAZON_URL_PATTERN = (
-    verbal_expression.start_of_line()
-    .find("http")
-    .maybe("s")
-    .find("://")
-    .maybe("www.")
-    .find("amazon.co.jp")
-    .anything_but(" ")
-).compile()
+AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp\S*?/dp/\S{10}\S*")
 
 
 class AmazonShortLink(commands.Cog):
@@ -75,8 +66,7 @@ class AmazonShortLink(commands.Cog):
 
         await message.delete()
 
-        for url_groups in AMAZON_URL_PATTERN.findall(message.content):
-            url = "".join(url_groups)
+        for url in AMAZON_URL_PATTERN.findall(message.content):
             shorten_url = await self.get_shorten_url(url)
             new_message = new_message.replace(url, shorten_url)
         embed = self.generate_embed(sender.id)
