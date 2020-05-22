@@ -61,6 +61,8 @@ class AmazonShortLink(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.author.bot:
+            return
         if AMAZON_URL_PATTERN.search(message.content) is None:
             return
 
