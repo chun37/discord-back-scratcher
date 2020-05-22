@@ -2,7 +2,7 @@ import re
 from urllib.parse import urlparse
 
 import aiohttp
-from discord import AsyncWebhookAdapter, Webhook
+from discord import AsyncWebhookAdapter, Embed, Webhook
 from discord.ext import commands
 
 AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp/\S+?/dp/\S{10}\S*")
@@ -12,12 +12,14 @@ class AmazonShortLink(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def send_message(self, text, username, avatar_url, webhook_url):
+    async def send_message(self, text, username, avatar_url, webhook_url, embed):
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
                 webhook_url, adapter=AsyncWebhookAdapter(session)
             )
-            await webhook.send(text, username=username, avatar_url=avatar_url)
+            await webhook.send(
+                text, username=username, avatar_url=avatar_url, embed=embed
+            )
 
     async def get_or_create_webhook(self, channel):
         webhooks = await channel.webhooks()
@@ -44,6 +46,11 @@ class AmazonShortLink(commands.Cog):
 
         return shorten_url
 
+    def generate_embed(self, author_id):
+        embed = Embed()
+        embed.set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
+        return embed
+
     @commands.Cog.listener()
     async def on_message(self, message):
         if AMAZON_URL_PATTERN.search(message.content) is None:
@@ -61,8 +68,9 @@ class AmazonShortLink(commands.Cog):
         for url in AMAZON_URL_PATTERN.findall(message.content):
             shorten_url = await self.get_shorten_url(url)
             new_message = new_message.replace(url, shorten_url)
+        embed = self.generate_embed(sender.id)
         await self.send_message(
-            new_message, sender_name, sender_avatar_url, channel_webhook.url
+            new_message, sender_name, sender_avatar_url, channel_webhook.url, embed
         )
 
 
