@@ -11,7 +11,7 @@ INITIAL_COGS = [
     "cogs.amazon_link",
     "cogs.check",
     "cogs.choose",
-    'cogs.echo',
+    "cogs.echo",
     "cogs.end",
     "cogs.gacha",
     "cogs.log_attachments",
@@ -25,7 +25,6 @@ INITIAL_COGS = [
 
 
 class MyBot(commands.Bot):
-
     def __init__(self):
         super().__init__(command_prefix=commands.when_mentioned_or("?"))
 
@@ -72,5 +71,5 @@ def main():
     print("Program End.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
