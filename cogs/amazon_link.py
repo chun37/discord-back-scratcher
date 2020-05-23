@@ -42,7 +42,7 @@ class AmazonShortLink(commands.Cog):
 
         return mywebhook
 
-    async def get_shorten_url(self, url):
+    def get_shorten_url(self, url):
         parsed_url = urlparse(url)
 
         dp_index = parsed_url.path.find("/dp")
@@ -75,7 +75,7 @@ class AmazonShortLink(commands.Cog):
         await message.delete()
 
         for url in AMAZON_URL_PATTERN.findall(message.content):
-            shorten_url = await self.get_shorten_url(url)
+            shorten_url = self.get_shorten_url(url)
             new_message = new_message.replace(url, shorten_url)
         embed = self.generate_embed(sender.id)
         await self.send_message(
