@@ -7,16 +7,17 @@ TWEET_URL_PATTERN = re.compile(r"https?://twitter.com/\S+/status/\d+")
 
 
 class TweetImage(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
     async def get_tweet_imageurls(self, url):
-        async with aiohttp.ClientSession() as session:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com/)"
+        }
+        async with aiohttp.ClientSession(headers=headers) as session:
             async with session.get(url) as res:
                 data = await res.text()
-        tags = bs(data, "lxml").find_all(
-            "meta", attrs={"property": "og:image"})
+        tags = bs(data, "lxml").find_all("meta", attrs={"property": "og:image"})
         return list(map(lambda x: x["content"], tags))
 
     @commands.Cog.listener()
