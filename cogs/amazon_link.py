@@ -2,6 +2,7 @@ import re
 from urllib.parse import urlparse
 
 import aiohttp
+from bs4 import BeautifulSoup as bs
 from discord import AsyncWebhookAdapter, Embed, Webhook
 from discord.errors import Forbidden, NotFound
 from discord.ext import commands
@@ -20,13 +21,13 @@ class AmazonShortLink(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def send_message(self, text, username, avatar_url, webhook_url, embed):
+    async def send_message(self, text, username, avatar_url, webhook_url, embeds):
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
                 webhook_url, adapter=AsyncWebhookAdapter(session)
             )
             await webhook.send(
-                text, username=username, avatar_url=avatar_url, embed=embed
+                text, username=username, avatar_url=avatar_url, embeds=embeds,
             )
 
     async def get_or_create_webhook(self, channel):
@@ -53,10 +54,36 @@ class AmazonShortLink(commands.Cog):
 
         return shorten_url
 
-    def generate_embed(self, author_id):
-        embed = Embed()
-        embed.set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
+    async def create_amazon_embed(self, session, url):
+        async with session.get(url) as response:
+            res = await response.text()
+        asin = url.split("/")[-1]
+        soup = bs(res, "lxml")
+        title = soup.find("meta", attrs={"name": "title"})["content"]
+        thumbnail = soup.find(
+            "div", attrs={"class": "imgTagWrapper", "id": "imgTagWrapperId"}
+        ).find("img")["src"]
+        embed = Embed(title=title, url=url, description=f"ASIN: {asin}")
+        embed.set_thumbnail(url=thumbnail)
         return embed
+
+    async def generate_embeds(self, urls, author_id):
+        headers = {
+            "User-Agent": "python-requests/2.23.0",
+            "Accept-Encoding": "gzip, deflate",
+            "Accept": "*/*",
+            "Connection": "keep-alive",
+        }
+        unique_urls = set()
+        embeds = []
+        async with aiohttp.ClientSession(headers=headers) as session:
+            for url in urls:
+                if url in unique_urls:
+                    continue
+                embeds.append(await self.create_amazon_embed(session, url))
+                unique_urls.add(url)
+        embeds[-1].set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
+        return embeds
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -72,14 +99,17 @@ class AmazonShortLink(commands.Cog):
         sender_name = sender.display_name
         new_message = message.content
 
-        await message.delete()
+        shorten_urls = []
 
         for url in AMAZON_URL_PATTERN.findall(message.content):
             shorten_url = self.get_shorten_url(url)
             new_message = new_message.replace(url, shorten_url)
-        embed = self.generate_embed(sender.id)
+            shorten_urls.append(shorten_url)
+        embeds = await self.generate_embeds(shorten_urls, sender.id)
+
+        await message.delete()
         await self.send_message(
-            new_message, sender_name, sender_avatar_url, channel_webhook.url, embed
+            new_message, sender_name, sender_avatar_url, channel_webhook.url, embeds,
         )
 
     async def delete_message_from_channel(self, ctx, channel, message_id):
