@@ -117,9 +117,9 @@ class AmazonShortLink(commands.Cog):
             message = await channel.fetch_message(message_id)
         except (Forbidden, NotFound):
             raise OwnershipError("指定のメッセージがありません。\nこのチャンネルのメッセージでなければ、リンクで指定してください。")
-        if not message.embeds or len(message.embeds) > 1:
+        if not message.embeds:
             raise OwnershipError(f"{self.bot.user.name}に編集されたメッセージのみ削除することが出来ます。")
-        embed = message.embeds[0]
+        embed = message.embeds[-1]
         if not embed.footer:
             raise OwnershipError(f"{self.bot.user.name}に編集されたメッセージのみ削除することが出来ます。")
         footer_text = embed.footer.text
