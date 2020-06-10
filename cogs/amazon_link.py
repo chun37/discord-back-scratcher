@@ -3,8 +3,8 @@ from urllib.parse import urlparse
 
 import aiohttp
 from discord import AsyncWebhookAdapter, Embed, Webhook
+from discord.errors import Forbidden, NotFound
 from discord.ext import commands
-from discord.errors import NotFound, Forbidden
 
 AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp\S*?/dp/\S{10}\S*")
 MESSAGE_LINK_PATTERN = re.compile(
