@@ -8,6 +8,7 @@ class Choose(commands.Cog):
 
     @commands.command(aliases=["random"])
     async def choose_one_from(self, ctx, *options):
+        """複数の選択肢の中から1つ選びます"""
         result = random.choice(options)
         await ctx.send(result)
 

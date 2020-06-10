@@ -4,7 +4,7 @@ from discord.ext import commands
 from utils import fetch_async
 
 
-class Search(commands.Cog):
+class Search(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
 

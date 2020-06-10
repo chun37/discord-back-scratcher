@@ -7,6 +7,7 @@ class Sticker(commands.Cog):
 
     @commands.command(aliases=["emoji", "sticker"])
     async def getCustomEmojiId(self, ctx, emoji: commands.EmojiConverter):
+        """カスタム絵文字の情報を返します"""
         await ctx.send(emoji.__repr__())
 
 

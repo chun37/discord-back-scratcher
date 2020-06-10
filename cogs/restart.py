@@ -10,6 +10,7 @@ class Restart(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def restart(self, ctx):
+        """再起動"""
         await ctx.send("再起動します")
         self.bot.exit_signal = exceptions.RestartSignal()
         await self.bot.logout()

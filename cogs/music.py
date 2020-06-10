@@ -10,7 +10,7 @@ from models import LocalMusicItem
 from cogs.localcheck import exists_voice_client
 
 
-class Music(commands.Cog):
+class Music(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
         self.queues = defaultdict(lambda: queue.Queue())

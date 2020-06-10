@@ -3,7 +3,7 @@ from discord.ext import commands
 from cogs.localcheck import exists_voice_client
 
 
-class VoiceChat(commands.Cog):
+class VoiceChat(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
 

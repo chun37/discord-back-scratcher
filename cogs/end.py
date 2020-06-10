@@ -10,6 +10,7 @@ class End(commands.Cog):
     @commands.command()
     @commands.is_owner()
     async def end(self, ctx):
+        """終了"""
         await ctx.message.add_reaction('\N{WAVING HAND SIGN}')
         voice_client = ctx.guild.voice_client
         if bool(voice_client):

@@ -130,6 +130,7 @@ class AmazonShortLink(commands.Cog):
 
     @commands.command()
     async def delete(self, ctx, link_or_id):
+        """WebHookで送信したメッセージを削除します"""
         match_object = MESSAGE_LINK_PATTERN.search(link_or_id)
 
         if match_object:

@@ -6,7 +6,7 @@ from discord import Embed
 from discord.ext import commands
 
 
-class Gacha(commands.Cog):
+class Gacha(commands.Cog, command_attrs=dict(hidden=True)):
     def __init__(self, bot):
         self.bot = bot
 
