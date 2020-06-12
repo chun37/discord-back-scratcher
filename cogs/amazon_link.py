@@ -18,7 +18,7 @@ class OwnershipError(Exception):
 
 
 def escape_markdown(text):
-    return re.sub(r'([*_])', r'\\\1', text)
+    return re.sub(r'([*_`~|])', r'\\\1', text)
 
 
 class AmazonShortLink(commands.Cog):
