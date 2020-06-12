@@ -68,10 +68,10 @@ class AmazonShortLink(commands.Cog):
         ).find("img")["src"]
 
         descriptions = []
-        if prices := soup.select("#priceblock_ourprice"):
-            descriptions.append(prices[0].text)
-        if ratings := soup.select('span[data-hook="rating-out-of-text"]'):
-            descriptions.append(ratings[0].text)
+        if price := soup.select_one("#priceblock_ourprice"):
+            descriptions.append(price.text)
+        if rating := soup.select_one('span[data-hook="rating-out-of-text"]'):
+            descriptions.append(rating.text)
         if asin := url.split("/")[-1]:
             descriptions.append(f"ASIN: {asin}")
 
