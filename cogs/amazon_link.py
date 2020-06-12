@@ -17,6 +17,10 @@ class OwnershipError(Exception):
     pass
 
 
+def escape_markdown(text):
+    return re.sub(r'([*_])', r'\\\1', text)
+
+
 class AmazonShortLink(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -63,7 +67,8 @@ class AmazonShortLink(commands.Cog):
         thumbnail = soup.find(
             "div", attrs={"class": "imgTagWrapper", "id": "imgTagWrapperId"}
         ).find("img")["src"]
-        embed = Embed(title=title, url=url, description=f"ASIN: {asin}")
+        embed = Embed(title=escape_markdown(title),
+                      url=url, description=f"ASIN: {asin}")
         embed.set_thumbnail(url=thumbnail)
         return embed
 
