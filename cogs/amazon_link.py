@@ -61,14 +61,22 @@ class AmazonShortLink(commands.Cog):
     async def create_amazon_embed(self, session, url):
         async with session.get(url) as response:
             res = await response.text()
-        asin = url.split("/")[-1]
         soup = bs(res, "lxml")
         title = soup.find("meta", attrs={"name": "title"})["content"]
         thumbnail = soup.find(
             "div", attrs={"class": "imgTagWrapper", "id": "imgTagWrapperId"}
         ).find("img")["src"]
+
+        descriptions = []
+        if prices := soup.select("#priceblock_ourprice"):
+            descriptions.append(prices[0].text)
+        if ratings := soup.select('span[data-hook="rating-out-of-text"]'):
+            descriptions.append(ratings[0].text)
+        if asin := url.split("/")[-1]:
+            descriptions.append(f"ASIN: {asin}")
+
         embed = Embed(title=escape_markdown(title),
-                      url=url, description=f"ASIN: {asin}")
+                      url=url, description="\n".join(descriptions))
         embed.set_thumbnail(url=thumbnail)
         return embed
 
