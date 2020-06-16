@@ -1,3 +1,4 @@
+import json
 import re
 from urllib.parse import urlparse
 
@@ -18,7 +19,7 @@ class OwnershipError(Exception):
 
 
 def escape_markdown(text):
-    return re.sub(r'([*_`~|])', r'\\\1', text)
+    return re.sub(r"([*_`~|])", r"\\\1", text)
 
 
 class AmazonShortLink(commands.Cog):
@@ -60,12 +61,21 @@ class AmazonShortLink(commands.Cog):
 
     async def create_amazon_embed(self, session, url):
         async with session.get(url) as response:
+            if response.status != 200:
+                print(f"取得Error {url}")
+                return Embed()
             res = await response.text()
         soup = bs(res, "lxml")
-        title = soup.find("meta", attrs={"name": "title"})["content"]
-        thumbnail = soup.find(
-            "div", attrs={"class": "imgTagWrapper", "id": "imgTagWrapperId"}
-        ).find("img")["src"]
+        if title := soup.select_one("meta[name=title]"):
+            title = title["content"]
+        else:
+            return Embed()
+
+        if thumbnail := soup.select_one("#landingImage"):
+            thumbnail = thumbnail["src"]
+        elif thumbnail := soup.select_one("#imgBlkFront"):  # 本の場合
+            url_dict = json.loads(thumbnail["data-a-dynamic-image"])
+            thumbnail = max(url_dict.items(), key=lambda x: sum(x[1]))[0]
 
         descriptions = []
         if price := soup.select_one("#priceblock_ourprice"):
@@ -75,9 +85,11 @@ class AmazonShortLink(commands.Cog):
         if asin := url.split("/")[-1]:
             descriptions.append(f"ASIN: {asin}")
 
-        embed = Embed(title=escape_markdown(title),
-                      url=url, description="\n".join(descriptions))
-        embed.set_thumbnail(url=thumbnail)
+        embed = Embed(
+            title=escape_markdown(title), url=url, description="\n".join(descriptions)
+        )
+        if thumbnail:
+            embed.set_thumbnail(url=thumbnail)
         return embed
 
     async def generate_embeds(self, urls, author_id):
@@ -93,8 +105,13 @@ class AmazonShortLink(commands.Cog):
             for url in urls:
                 if url in unique_urls:
                     continue
-                embeds.append(await self.create_amazon_embed(session, url))
+                amazon_embed = await self.create_amazon_embed(session, url)
+                if amazon_embed.title is Embed.Empty:
+                    continue
+                embeds.append(amazon_embed)
                 unique_urls.add(url)
+        if not embeds:
+            embeds.append(Embed())
         embeds[-1].set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
         return embeds
 
