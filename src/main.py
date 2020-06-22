@@ -13,14 +13,9 @@ INITIAL_COGS = [
     "cogs.choose",
     "cogs.echo",
     "cogs.end",
-    "cogs.gacha",
-    "cogs.log_attachments",
-    "cogs.music",
     "cogs.restart",
-    "cogs.search",
     "cogs.sticker",
     "cogs.tweet_image",
-    "cogs.voice",
 ]
 
 
