@@ -1,4 +1,4 @@
-import exceptions
+from src import exceptions
 
 from discord.ext import commands
 
