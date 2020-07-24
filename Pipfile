@@ -9,6 +9,6 @@ autopep8 = "*"
 [packages]
 python-dotenv = "==0.14.0"
 bs4 = "==0.0.1"
-aiosqlite = "==0.10.0"
+aiosqlite = "==0.15.0"
 "discord.py" = {extras = ["voice"],version = "~=1.3"}
 lxml = "*"
