@@ -17,7 +17,7 @@ class TweetImage(commands.Cog):
         async with aiohttp.ClientSession(headers=headers) as session:
             async with session.get(url) as res:
                 data = await res.text()
-        tags = bs(data, "lxml").find_all("meta", attrs={"property": "og:image"})
+        tags = bs(data, "lxml").select("meta[property=og\\:image]")
         return list(map(lambda x: x["content"], tags))
 
     @commands.Cog.listener()
