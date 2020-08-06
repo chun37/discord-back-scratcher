@@ -1,4 +1,4 @@
 python-dotenv==0.10.3
-discord.py[voice]==1.2.3
+discord.py[voice]==1.4.0
 bs4==0.0.1
 aiosqlite==0.10.0
