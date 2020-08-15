@@ -68,6 +68,7 @@ class AmazonShortLink(commands.Cog):
         soup = bs(res, "lxml")
         if title := soup.select_one("meta[name=title]"):
             title = title["content"]
+            title = title[:255] + "…" if len(title) > 256 else title
         else:
             return Embed()
 
