@@ -1,5 +1,5 @@
 import re
-from urllib.parse import unquote
+import urllib.parse
 
 from discord.ext import commands
 
@@ -18,8 +18,9 @@ class UnquoteLink(commands.Cog):
             return
 
         urls = []
-        for url in URL_PATTERN.findall(message.content):
-            new_url = unquote(url)
+        for url_match in URL_PATTERN.finditer(message.content):
+            url = url_match[0]
+            new_url = urllib.parse.unquote(url)
             if new_url != url:
                 urls.append(new_url)
 
