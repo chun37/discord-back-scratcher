@@ -27,7 +27,7 @@ class UnquoteLink(commands.Cog):
         if len(urls) == 0:
             return
 
-        new_message = "もしかして：\n" + "\n".join(urls)
+        new_message = "もしかして：\n" + "\n".join("<" + url + ">" for url in urls)
         await message.channel.send(new_message)
         return
 
