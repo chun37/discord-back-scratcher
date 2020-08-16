@@ -21,7 +21,7 @@ INITIAL_COGS = [
 
 class MyBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=commands.when_mentioned_or("?"))
+        super().__init__(command_prefix=commands.when_mentioned_or("*"))
 
         for cog in INITIAL_COGS:
             try:
@@ -43,8 +43,6 @@ class MyBot(commands.Bot):
             pass
         finally:
             loop.run_until_complete(self.close())
-            pending = asyncio.Task.all_tasks()
-            loop.run_until_complete(asyncio.gather(*pending))
             if self.exit_signal:
                 raise self.exit_signal
 
