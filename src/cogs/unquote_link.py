@@ -3,7 +3,7 @@ from urllib.parse import unquote
 
 from discord.ext import commands
 
-URL_PATTERN = re.compile(r"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=~]*)?")
+URL_PATTERN = re.compile(r"http(s)?://([-\w]+\.)+[-\w]+(/[-\w ./?%&=~]*)?")
 
 
 class UnquoteLink(commands.Cog):
