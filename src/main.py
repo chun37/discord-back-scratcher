@@ -43,8 +43,6 @@ class MyBot(commands.Bot):
             pass
         finally:
             loop.run_until_complete(self.close())
-            pending = asyncio.Task.all_tasks()
-            loop.run_until_complete(asyncio.gather(*pending))
             if self.exit_signal:
                 raise self.exit_signal
 
