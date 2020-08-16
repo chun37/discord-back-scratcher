@@ -21,7 +21,7 @@ INITIAL_COGS = [
 
 class MyBot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix=commands.when_mentioned_or("?"))
+        super().__init__(command_prefix=commands.when_mentioned_or("*"))
 
         for cog in INITIAL_COGS:
             try:

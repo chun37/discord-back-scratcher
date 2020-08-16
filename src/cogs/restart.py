@@ -1,6 +1,8 @@
-from src import exceptions
-
 from discord.ext import commands
+
+
+class RestartSignal(Exception):
+    pass
 
 
 class Restart(commands.Cog):
@@ -12,7 +14,7 @@ class Restart(commands.Cog):
     async def restart(self, ctx):
         """再起動"""
         await ctx.send("再起動します")
-        self.bot.exit_signal = exceptions.RestartSignal()
+        self.bot.exit_signal = RestartSignal()
         await self.bot.logout()
 
 
