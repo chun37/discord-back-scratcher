@@ -7,7 +7,6 @@ from discord.ext import commands
 
 dotenv.load_dotenv()
 
-# HACK: amazon_link と unquote_link の順番は考慮が必要かも。
 INITIAL_COGS = [
     "cogs.amazon_link",
     "cogs.check",
