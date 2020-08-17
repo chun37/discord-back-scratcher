@@ -16,6 +16,7 @@ INITIAL_COGS = [
     "cogs.restart",
     "cogs.sticker",
     "cogs.tweet_image",
+    "cogs.unquote_link",
 ]
 
 
