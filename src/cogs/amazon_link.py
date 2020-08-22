@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 import aiohttp
 from bs4 import BeautifulSoup as bs
-from discord import AsyncWebhookAdapter, Embed, Webhook
+from discord import AsyncWebhookAdapter, Embed, Webhook, utils
 from discord.errors import Forbidden, NotFound
 from discord.ext import commands
 
@@ -37,16 +37,15 @@ class AmazonShortLink(commands.Cog):
 
     async def get_or_create_webhook(self, channel):
         webhooks = await channel.webhooks()
-        for webhook in webhooks:
-            if webhook.user.id != self.bot.user.id:
-                continue
-            return webhook
+
+        if my_webhook := utils.get(webhooks, user__id=self.bot.user.id):
+            return my_webhook
 
         avatar_bytes = await self.bot.user.avatar_url.read()
 
-        mywebhook = await channel.create_webhook(name="kaede-bot", avatar=avatar_bytes)
+        my_webhook = await channel.create_webhook(name="kaede-bot", avatar=avatar_bytes)
 
-        return mywebhook
+        return my_webhook
 
     def get_shorten_url(self, url):
         parsed_url = urlparse(url)
