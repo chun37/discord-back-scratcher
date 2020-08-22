@@ -43,9 +43,9 @@ class AmazonShortLink(commands.Cog):
 
         avatar_bytes = await self.bot.user.avatar_url.read()
 
-        mywebhook = await channel.create_webhook(name="kaede-bot", avatar=avatar_bytes)
+        my_webhook = await channel.create_webhook(name="kaede-bot", avatar=avatar_bytes)
 
-        return mywebhook
+        return my_webhook
 
     def get_shorten_url(self, url):
         parsed_url = urlparse(url)
