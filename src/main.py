@@ -22,7 +22,7 @@ INITIAL_COGS = [
 
 
 class MyBot(commands.Bot):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(command_prefix=commands.when_mentioned_or("?"))
 
         for cog in INITIAL_COGS:
@@ -33,14 +33,14 @@ class MyBot(commands.Bot):
 
         self.exit_signal = None
 
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         print(self.user.name)
         print(self.user.id, "\n")
 
-    def run(self, *args, **kwargs):
+    def run(self, token: str) -> None:
         loop = asyncio.get_event_loop()
         try:
-            loop.run_until_complete(self.start(*args, **kwargs))
+            loop.run_until_complete(self.start(token))
         except:
             pass
         finally:
@@ -49,12 +49,12 @@ class MyBot(commands.Bot):
                 raise self.exit_signal
 
 
-def main():
+def main() -> None:
     try_again = True
     while try_again:
         try:
             bot = MyBot()
-            bot.run(os.getenv("DISCORD_TOKEN"))
+            bot.run(os.environ["DISCORD_TOKEN"])
         except Exception as e:
             if e.__class__.__name__ == "EndSignal":
                 try_again = False

@@ -1,18 +1,19 @@
 import re
 import urllib.parse
 
-from discord.ext import commands
+from discord import Message
+from discord.ext.commands import Bot, Cog
 
 URL_PATTERN = re.compile(r"https?://([-\w]+\.)+[-\w]+[-\w./()?%&=~]*")
 AMAZON_URL_PATTERN = re.compile(r"https?://(www\.)?amazon\.co\.jp[-\w./?%&=~]*")
 
 
-class UnquoteLink(commands.Cog):
-    def __init__(self, bot):
+class UnquoteLink(Cog):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
+    @Cog.listener()
+    async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
         if URL_PATTERN.search(message.content) is None:
@@ -36,5 +37,5 @@ class UnquoteLink(commands.Cog):
         return
 
 
-def setup(bot):
+def setup(bot: Bot) -> None:
     bot.add_cog(UnquoteLink(bot))
