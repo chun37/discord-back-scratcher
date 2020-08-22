@@ -1,17 +1,17 @@
-from discord.ext import commands
+from discord.ext.commands import Bot, Cog, Context, command, is_owner
 
 
 class EndSignal(Exception):
     pass
 
 
-class End(commands.Cog):
-    def __init__(self, bot):
+class End(Cog):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @commands.command()
-    @commands.is_owner()
-    async def end(self, ctx):
+    @command()
+    @is_owner()
+    async def end(self, ctx: Context) -> None:
         """終了"""
         await ctx.message.add_reaction("\N{WAVING HAND SIGN}")
         voice_client = ctx.guild.voice_client
@@ -21,5 +21,5 @@ class End(commands.Cog):
         await self.bot.logout()
 
 
-def setup(bot):
+def setup(bot: Bot) -> None:
     bot.add_cog(End(bot))

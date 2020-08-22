@@ -1,12 +1,13 @@
 import json
 import re
+from typing import List
 from urllib.parse import urlparse
 
 import aiohttp
 from bs4 import BeautifulSoup as bs
-from discord import AsyncWebhookAdapter, Embed, Webhook, utils
+from discord import AsyncWebhookAdapter, Embed, Message, TextChannel, Webhook, utils
 from discord.errors import Forbidden, NotFound
-from discord.ext import commands
+from discord.ext.commands import Bot, Cog, Context, command
 
 AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp\S*?/dp/\S{10}\S*")
 MESSAGE_LINK_PATTERN = re.compile(
@@ -18,15 +19,22 @@ class OwnershipError(Exception):
     pass
 
 
-def escape_markdown(text):
+def escape_markdown(text: str) -> str:
     return re.sub(r"([*_`~|])", r"\\\1", text)
 
 
-class AmazonShortLink(commands.Cog):
-    def __init__(self, bot):
+class AmazonShortLink(Cog):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    async def send_message(self, text, username, avatar_url, webhook_url, embeds):
+    async def send_message(
+        self,
+        text: str,
+        username: str,
+        avatar_url: str,
+        webhook_url: str,
+        embeds: List[Embed],
+    ) -> None:
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
                 webhook_url, adapter=AsyncWebhookAdapter(session)
@@ -35,7 +43,7 @@ class AmazonShortLink(commands.Cog):
                 text, username=username, avatar_url=avatar_url, embeds=embeds,
             )
 
-    async def get_or_create_webhook(self, channel):
+    async def get_or_create_webhook(self, channel: TextChannel) -> Webhook:
         webhooks = await channel.webhooks()
 
         if my_webhook := utils.get(webhooks, user__id=self.bot.user.id):
@@ -47,7 +55,7 @@ class AmazonShortLink(commands.Cog):
 
         return my_webhook
 
-    def get_shorten_url(self, url):
+    def get_shorten_url(self, url: str) -> str:
         parsed_url = urlparse(url)
 
         dp_index = parsed_url.path.find("/dp")
@@ -58,7 +66,9 @@ class AmazonShortLink(commands.Cog):
 
         return shorten_url
 
-    async def create_amazon_embed(self, session, url):
+    async def create_amazon_embed(
+        self, session: aiohttp.ClientSession, url: str
+    ) -> Embed:
         async with session.get(url) as response:
             if response.status != 200:
                 print(f"取得Error {url}")
@@ -92,7 +102,7 @@ class AmazonShortLink(commands.Cog):
             embed.set_thumbnail(url=thumbnail)
         return embed
 
-    async def generate_embeds(self, urls, author_id):
+    async def generate_embeds(self, urls: List[str], author_id: int) -> List[Embed]:
         headers = {
             "User-Agent": "python-requests/2.23.0",
             "Accept-Encoding": "gzip, deflate",
@@ -115,8 +125,8 @@ class AmazonShortLink(commands.Cog):
         embeds[-1].set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
         return embeds
 
-    @commands.Cog.listener()
-    async def on_message(self, message):
+    @Cog.listener()
+    async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
         if AMAZON_URL_PATTERN.search(message.content) is None:
@@ -142,7 +152,9 @@ class AmazonShortLink(commands.Cog):
             new_message, sender_name, sender_avatar_url, channel_webhook.url, embeds,
         )
 
-    async def delete_message_from_channel(self, ctx, channel, message_id):
+    async def delete_message_from_channel(
+        self, ctx: Context, channel: TextChannel, message_id: int
+    ) -> None:  # ここ raise してるし、Optional[NoRerutn] のはずなんだけど…
         try:
             message = await channel.fetch_message(message_id)
         except (Forbidden, NotFound):
@@ -158,23 +170,25 @@ class AmazonShortLink(commands.Cog):
 
         await message.delete()
 
-    @commands.command()
-    async def delete(self, ctx, link_or_id):
+    @command()
+    async def delete(self, ctx: Context, link_or_id: str) -> None:
         """WebHookで送信したメッセージを削除します"""
         match_object = MESSAGE_LINK_PATTERN.search(link_or_id)
 
         if match_object:
-            channel_id = match_object.group(1)
-            message_id = match_object.group(2)
+            channel_id = int(match_object.group(1))
+            message_id = int(match_object.group(2))
             try:
                 channel = await self.bot.fetch_channel(channel_id)
             except (Forbidden, NotFound):
-                return await ctx.send("チャンネルが取得出来ませんでした。", delete_after=30)
+                await ctx.send("チャンネルが取得出来ませんでした。", delete_after=30)
+                return
         elif link_or_id.isdecimal():
             channel = ctx.channel
-            message_id = link_or_id
+            message_id = int(link_or_id)
         else:
-            return await ctx.send("メッセージIDかメッセージリンクを送ってね", delete_after=30)
+            await ctx.send("メッセージIDかメッセージリンクを送ってね", delete_after=30)
+            return
 
         try:
             await self.delete_message_from_channel(ctx, channel, message_id)
@@ -182,5 +196,5 @@ class AmazonShortLink(commands.Cog):
             await ctx.send(*e.args, delete_after=30)
 
 
-def setup(bot):
+def setup(bot: Bot) -> None:
     bot.add_cog(AmazonShortLink(bot))

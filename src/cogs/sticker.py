@@ -1,13 +1,13 @@
 from discord import Embed
-from discord.ext import commands
+from discord.ext.commands import Bot, Cog, Context, EmojiConverter, command
 
 
-class Sticker(commands.Cog):
-    def __init__(self, bot):
+class Sticker(Cog):
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @commands.command(aliases=["emoji", "sticker"])
-    async def getCustomEmojiId(self, ctx, emoji: commands.EmojiConverter):
+    @command(aliases=["emoji", "sticker"])
+    async def getCustomEmojiId(self, ctx: Context, emoji: EmojiConverter) -> None:
         """カスタム絵文字の情報を返します"""
         embed = Embed(title=emoji.name, url=str(emoji.url))
         embed.set_thumbnail(url=str(emoji.url))
@@ -22,5 +22,5 @@ class Sticker(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot: Bot) -> None:
     bot.add_cog(Sticker(bot))
