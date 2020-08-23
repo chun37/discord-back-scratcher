@@ -5,7 +5,15 @@ from urllib.parse import urlparse
 
 import aiohttp
 from bs4 import BeautifulSoup as bs
-from discord import AsyncWebhookAdapter, Embed, Message, TextChannel, Webhook, utils
+from discord import (
+    AsyncWebhookAdapter,
+    Embed,
+    Message,
+    TextChannel,
+    User,
+    Webhook,
+    utils,
+)
 from discord.errors import Forbidden, NotFound
 from discord.ext.commands import Bot, Cog, Context, command
 
@@ -28,19 +36,17 @@ class AmazonShortLink(Cog):
         self.bot = bot
 
     async def send_message(
-        self,
-        text: str,
-        username: str,
-        avatar_url: str,
-        webhook_url: str,
-        embeds: List[Embed],
+        self, text: str, user: User, webhook_url: str, embeds: List[Embed],
     ) -> None:
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
                 webhook_url, adapter=AsyncWebhookAdapter(session)
             )
             await webhook.send(
-                text, username=username, avatar_url=avatar_url, embeds=embeds,
+                text,
+                username=user.display_name,
+                avatar_url=user.avatar_url,
+                embeds=embeds,
             )
 
     async def get_or_create_webhook(self, channel: TextChannel) -> Webhook:
@@ -55,7 +61,8 @@ class AmazonShortLink(Cog):
 
         return my_webhook
 
-    def get_shorten_url(self, url: str) -> str:
+    @staticmethod
+    def get_shorten_url(url: str) -> str:
         parsed_url = urlparse(url)
 
         dp_index = parsed_url.path.find("/dp")
@@ -135,8 +142,6 @@ class AmazonShortLink(Cog):
         channel_webhook = await self.get_or_create_webhook(message.channel)
 
         sender = message.author
-        sender_avatar_url = sender.avatar_url
-        sender_name = sender.display_name
         new_message = message.content
 
         shorten_urls = []
@@ -149,7 +154,7 @@ class AmazonShortLink(Cog):
 
         await message.delete()
         await self.send_message(
-            new_message, sender_name, sender_avatar_url, channel_webhook.url, embeds,
+            new_message, sender, channel_webhook.url, embeds,
         )
 
     async def delete_message_from_channel(
@@ -192,8 +197,8 @@ class AmazonShortLink(Cog):
 
         try:
             await self.delete_message_from_channel(ctx, channel, message_id)
-        except OwnershipError as e:
-            await ctx.send(*e.args, delete_after=30)
+        except OwnershipError as error:
+            await ctx.send(*error.args, delete_after=30)
 
 
 def setup(bot: Bot) -> None:

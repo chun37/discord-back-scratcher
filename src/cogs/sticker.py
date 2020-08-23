@@ -6,8 +6,8 @@ class Sticker(Cog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
-    @command(aliases=["emoji", "sticker"])
-    async def getCustomEmojiId(self, ctx: Context, emoji: EmojiConverter) -> None:
+    @command(name="emoji", aliases=["sticker"])
+    async def get_custom_emoji_id(self, ctx: Context, emoji: EmojiConverter) -> None:
         """カスタム絵文字の情報を返します"""
         embed = Embed(title=emoji.name, url=str(emoji.url))
         embed.set_thumbnail(url=str(emoji.url))
