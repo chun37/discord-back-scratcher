@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 mypy = "*"
 pylint = "*"
+isort = "*"
 
 [packages]
 python-dotenv = "==0.14.0"
