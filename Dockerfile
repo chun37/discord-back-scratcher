@@ -10,5 +10,3 @@ COPY Pipfile Pipfile.lock ./
 RUN pipenv install --system --ignore-pipfile --deploy
 
 COPY src/ ./src/
-
-CMD ["python", "src/main.py"]

@@ -3,6 +3,7 @@ services:
   bot:
     build: .
     container_name: back_scratcher
+    command: python  src/main.py
     environment:
       - DISCORD_TOKEN
       - TEST_SERVER_ID
