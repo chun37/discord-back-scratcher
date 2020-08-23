@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  bot:
+    build: .
+    container_name: back_scratcher
+    environment:
+      - DISCORD_TOKEN
+      - TEST_SERVER_ID
