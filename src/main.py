@@ -55,12 +55,10 @@ def main() -> None:
         try:
             bot = MyBot()
             bot.run(os.environ["DISCORD_TOKEN"])
-        except Exception as e:
-            if e.__class__.__name__ == "EndSignal":
+        except Exception as error:
+            if error.__class__.__name__ == "EndSignal":
                 try_again = False
                 break
-            elif e.__class__.__name__ == "RestartSignal":
-                pass
         finally:
             asyncio.set_event_loop(asyncio.new_event_loop())
     print("Program End.")
