@@ -8,7 +8,7 @@ from discord import Message
 from discord.ext.commands import Bot, Cog
 import typedjson
 
-TWEET_URL_PATTERN = re.compile(r"https?://twitter.com/\S+/status/\d+")
+TWEET_URL_PATTERN = re.compile(r"https?://twitter.com/\W+/status/\d+")
 
 
 def get_twitter_api() -> tweepy.API:
