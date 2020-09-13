@@ -36,7 +36,11 @@ class AmazonShortLink(Cog):
         self.bot = bot
 
     async def send_message(
-        self, text: str, user: User, webhook_url: str, embeds: List[Embed],
+        self,
+        text: str,
+        user: User,
+        webhook_url: str,
+        embeds: List[Embed],
     ) -> None:
         async with aiohttp.ClientSession() as session:
             webhook = Webhook.from_url(
@@ -154,7 +158,10 @@ class AmazonShortLink(Cog):
 
         await message.delete()
         await self.send_message(
-            new_message, sender, channel_webhook.url, embeds,
+            new_message,
+            sender,
+            channel_webhook.url,
+            embeds,
         )
 
     async def delete_message_from_channel(
