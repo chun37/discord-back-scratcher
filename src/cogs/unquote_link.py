@@ -25,7 +25,9 @@ class UnquoteLink(Cog):
             if AMAZON_URL_PATTERN.match(url):
                 continue
 
-            new_url = urllib.parse.unquote(url)
+            new_url = (
+                urllib.parse.unquote(url).replace(" ", "%20").replace("　", "%E3%80%80")
+            )
             if new_url != url:
                 urls.append(new_url)
 
