@@ -1,9 +1,10 @@
 import asyncio
 import os
+import sys
 import traceback
 
 import dotenv
-from discord.ext import commands
+from discord.ext.commands import Bot, when_mentioned_or
 
 dotenv.load_dotenv()
 
@@ -21,17 +22,14 @@ INITIAL_COGS = [
 ]
 
 
-class MyBot(commands.Bot):
+class MyBot(Bot):
     def __init__(self) -> None:
-        super().__init__(command_prefix=commands.when_mentioned_or("?"))
-
+        super().__init__(command_prefix=when_mentioned_or("?"))
         for cog in INITIAL_COGS:
             try:
                 self.load_extension(cog)
             except:
                 traceback.print_exc()
-
-        self.exit_signal = None
 
     async def on_ready(self) -> None:
         print(self.user.name)
@@ -41,27 +39,17 @@ class MyBot(commands.Bot):
         loop = asyncio.get_event_loop()
         try:
             loop.run_until_complete(self.start(token))
-        except:
-            pass
+        except KeyboardInterrupt:
+            print("Program End.")
+            sys.exit()
         finally:
             loop.run_until_complete(self.close())
-            if self.exit_signal:
-                raise self.exit_signal
 
 
 def main() -> None:
-    try_again = True
-    while try_again:
-        try:
-            bot = MyBot()
-            bot.run(os.environ["DISCORD_TOKEN"])
-        except Exception as error:
-            if error.__class__.__name__ == "EndSignal":
-                try_again = False
-                break
-        finally:
-            asyncio.set_event_loop(asyncio.new_event_loop())
-    print("Program End.")
+    while True:
+        bot = MyBot()
+        bot.run(os.environ["DISCORD_TOKEN"])
 
 
 if __name__ == "__main__":
