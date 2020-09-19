@@ -11,4 +11,4 @@ COPY Pipfile Pipfile.lock ./
 
 RUN pipenv install --system --ignore-pipfile --deploy
 
-COPY cogs/ main.py ./
+COPY cogs/ custom/ main.py ./

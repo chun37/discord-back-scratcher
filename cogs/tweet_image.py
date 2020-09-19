@@ -1,12 +1,14 @@
 import os
 import re
-from typing import Any, Callable, List, Dict
 from dataclasses import dataclass
+from typing import Any, Callable, Dict, List
 
 import tweepy
-from discord import Message
-from discord.ext.commands import Bot, Cog
 import typedjson
+from discord import Message
+from discord.ext.commands import Bot
+
+from custom import CustomCog
 
 TWEET_URL_PATTERN = re.compile(r"https?://twitter.com/\w+/status/\d+")
 
@@ -40,7 +42,7 @@ def get_serialized_media(json: Dict[str, Any]) -> Media:
     return obj
 
 
-class TweetImage(Cog):
+class TweetImage(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.twitter_api = get_twitter_api()
@@ -59,7 +61,7 @@ class TweetImage(Cog):
         photo_filter: Callable[[Media], bool] = lambda media: media.type == "photo"
         return list(map(get_url, filter(photo_filter, serialized_media)))
 
-    @Cog.listener()
+    @CustomCog.listener()
     async def on_message(self, message: Message) -> None:
         if TWEET_URL_PATTERN.search(message.content) is None:
             return

@@ -1,8 +1,10 @@
 from discord import Embed
-from discord.ext.commands import Bot, Cog, Context, EmojiConverter, command
+from discord.ext.commands import Bot, Context, EmojiConverter, command
+
+from custom import CustomCog
 
 
-class Sticker(Cog):
+class Sticker(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 

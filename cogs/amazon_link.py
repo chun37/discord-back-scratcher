@@ -15,7 +15,9 @@ from discord import (
     utils,
 )
 from discord.errors import Forbidden, NotFound
-from discord.ext.commands import Bot, Cog, Context, command
+from discord.ext.commands import Bot, Context, command
+
+from custom import CustomCog
 
 AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp\S*?/dp/\S{10}\S*")
 MESSAGE_LINK_PATTERN = re.compile(
@@ -31,7 +33,7 @@ def escape_markdown(text: str) -> str:
     return re.sub(r"([*_`~|])", r"\\\1", text)
 
 
-class AmazonShortLink(Cog):
+class AmazonShortLink(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -136,7 +138,7 @@ class AmazonShortLink(Cog):
         embeds[-1].set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
         return embeds
 
-    @Cog.listener()
+    @CustomCog.listener()
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
