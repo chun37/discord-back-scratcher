@@ -1,6 +1,6 @@
 import sys
 
-from discord.ext.commands import Bot, Context, command, is_owner
+from discord.ext.commands import Bot, Context, command, is_owner, bot_has_permissions
 
 from custom import CustomCog
 
@@ -15,6 +15,7 @@ class End(CustomCog):
 
     @command()
     @is_owner()
+    @bot_has_permissions(add_reactions=True)
     async def end(self, ctx: Context) -> None:
         """終了"""
         await ctx.message.add_reaction("\N{WAVING HAND SIGN}")

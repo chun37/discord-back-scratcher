@@ -15,7 +15,7 @@ from discord import (
     utils,
 )
 from discord.errors import Forbidden, NotFound
-from discord.ext.commands import Bot, Context, command
+from discord.ext.commands import Bot, Context, command, bot_has_permissions
 
 from custom import CustomCog
 
@@ -145,6 +145,13 @@ class AmazonShortLink(CustomCog):
         if AMAZON_URL_PATTERN.search(message.content) is None:
             return
 
+        self.on_message_bot_has_permissions(
+            message.guild,
+            message.channel,
+            self.bot.user,
+            manage_messages=True,
+            manage_webhooks=True,
+        )
         channel_webhook = await self.get_or_create_webhook(message.channel)
 
         sender = message.author
@@ -185,6 +192,7 @@ class AmazonShortLink(CustomCog):
         await message.delete()
 
     @command()
+    @bot_has_permissions(manage_messages=True)
     async def delete(self, ctx: Context, link_or_id: str) -> None:
         """WebHookで送信したメッセージを削除します"""
         match_object = MESSAGE_LINK_PATTERN.search(link_or_id)
