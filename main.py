@@ -2,12 +2,12 @@ import asyncio
 import os
 import sys
 import traceback
+from typing import Any
 
 import dotenv
-from discord.ext.commands import Bot, when_mentioned_or, BotMissingPermissions
+from discord.ext.commands import Bot, BotMissingPermissions, when_mentioned_or
 
 from utils import permissions_to_error_text
-
 
 dotenv.load_dotenv()
 
@@ -48,7 +48,7 @@ class MyBot(Bot):
         finally:
             loop.run_until_complete(self.close())
 
-    async def on_error(self, *args, **kwargs):
+    async def on_error(self, *args: Any, **kwargs: Any) -> None:
         error_type, error, _traceback = sys.exc_info()
         if isinstance(error, BotMissingPermissions):
             _, message, *_ = args

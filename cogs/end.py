@@ -1,6 +1,6 @@
 import sys
 
-from discord.ext.commands import Bot, Context, command, is_owner, bot_has_permissions
+from discord.ext.commands import Bot, Context, bot_has_permissions, command, is_owner
 
 from custom import CustomCog
 

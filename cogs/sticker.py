@@ -1,5 +1,11 @@
 from discord import Embed
-from discord.ext.commands import Bot, Context, EmojiConverter, command, bot_has_permissions
+from discord.ext.commands import (
+    Bot,
+    Context,
+    EmojiConverter,
+    bot_has_permissions,
+    command,
+)
 
 from custom import CustomCog
 

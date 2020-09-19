@@ -15,7 +15,7 @@ from discord import (
     utils,
 )
 from discord.errors import Forbidden, NotFound
-from discord.ext.commands import Bot, Context, command, bot_has_permissions
+from discord.ext.commands import Bot, Context, bot_has_permissions, command
 
 from custom import CustomCog
 
