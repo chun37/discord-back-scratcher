@@ -56,6 +56,7 @@ class MyBot(Bot):
         else:
             traceback.print_exception(error_type, error, _traceback)
 
+
 def main() -> None:
     while True:
         bot = MyBot()
