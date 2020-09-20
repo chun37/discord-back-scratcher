@@ -4,7 +4,7 @@ import urllib.parse
 from discord import Message
 from discord.ext.commands import Bot, Cog
 
-URL_PATTERN = re.compile(r"https?://([-\w]+\.)+[-\w]+[-\w./()?%&=~]*")
+URL_PATTERN = re.compile(r"https?://([-\w]+\.)+[-\w]+[-\w./()?%&=~#]*")
 AMAZON_URL_PATTERN = re.compile(r"https?://(www\.)?amazon\.co\.jp[-\w./?%&=~]*")
 
 
