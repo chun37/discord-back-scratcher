@@ -16,7 +16,7 @@ bs4 = "==0.0.1"
 lxml = "*"
 tweepy = "*"
 typedjson = "*"
-typing-extensions = "==3.7.4.2"
+typing-extensions = "==3.7.4.3"
 
 [scripts]
 bot = "python src/main.py"
