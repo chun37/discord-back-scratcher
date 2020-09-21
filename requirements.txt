@@ -1,4 +1,4 @@
--i https://pypi.org/simple
+-i https://pypi.org/simple/
 aiohttp==3.6.2
 async-timeout==3.0.1
 attrs==20.2.0
