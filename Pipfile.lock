@@ -289,11 +289,11 @@
         },
         "typedjson": {
             "hashes": [
-                "sha256:03646025fe5b8e1d61fee991a7f43620e39b94f5603331283b69c8fb3597ef74",
-                "sha256:f5211417d345c7d7f6eee59122eb835c648aab7114384b9130083f9d62e86e5f"
+                "sha256:02de8d3ba839fb2c51e5032a82f84429ad0dddf572f8e70242e6d66a2193f070",
+                "sha256:f8bae6e35da3b73672f878b9c3ae501ba163e9d968f29f8c48ae9c7f4b279001"
             ],
             "index": "pypi",
-            "version": "==0.8.0"
+            "version": "==0.9.0"
         },
         "typing-extensions": {
             "hashes": [
