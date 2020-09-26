@@ -19,7 +19,7 @@ typedjson = "*"
 typing-extensions = "==3.7.4.3"
 
 [scripts]
-bot = "python src/main.py"
+bot = "python main.py"
 
 [pipenv]
 allow_prereleases = true

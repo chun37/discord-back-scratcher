@@ -15,7 +15,9 @@ from discord import (
     utils,
 )
 from discord.errors import Forbidden, NotFound
-from discord.ext.commands import Bot, Cog, Context, command
+from discord.ext.commands import Bot, Context, bot_has_permissions, command
+
+from custom import CustomCog
 
 AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp\S*?/dp/\S{10}\S*")
 MESSAGE_LINK_PATTERN = re.compile(
@@ -31,7 +33,7 @@ def escape_markdown(text: str) -> str:
     return re.sub(r"([*_`~|])", r"\\\1", text)
 
 
-class AmazonShortLink(Cog):
+class AmazonShortLink(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -136,13 +138,20 @@ class AmazonShortLink(Cog):
         embeds[-1].set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
         return embeds
 
-    @Cog.listener()
+    @CustomCog.listener()
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
         if AMAZON_URL_PATTERN.search(message.content) is None:
             return
 
+        self.on_message_bot_has_permissions(
+            message.guild,
+            message.channel,
+            self.bot.user,
+            manage_messages=True,
+            manage_webhooks=True,
+        )
         channel_webhook = await self.get_or_create_webhook(message.channel)
 
         sender = message.author
@@ -183,6 +192,7 @@ class AmazonShortLink(Cog):
         await message.delete()
 
     @command()
+    @bot_has_permissions(manage_messages=True)
     async def delete(self, ctx: Context, link_or_id: str) -> None:
         """WebHookで送信したメッセージを削除します"""
         match_object = MESSAGE_LINK_PATTERN.search(link_or_id)

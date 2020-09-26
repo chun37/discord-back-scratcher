@@ -1,7 +1,9 @@
-from discord.ext.commands import Bot, Cog, Context, command, is_owner
+from discord.ext.commands import Bot, Context, command, is_owner
+
+from custom import CustomCog
 
 
-class Restart(Cog):
+class Restart(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 

@@ -1,7 +1,9 @@
-from discord.ext.commands import Bot, Cog, Context, command
+from discord.ext.commands import Bot, Context, command
+
+from custom import CustomCog
 
 
-class Echo(Cog):
+class Echo(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 

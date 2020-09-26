@@ -1,10 +1,12 @@
 import random
 from typing import Tuple
 
-from discord.ext.commands import Bot, Cog, Context, command
+from discord.ext.commands import Bot, Context, command
+
+from custom import CustomCog
 
 
-class Choose(Cog):
+class Choose(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
