@@ -67,7 +67,7 @@ class TweetImage(CustomCog):
             return
         for url in TWEET_URL_PATTERN.findall(message.content):
             urls = await self.get_tweet_imageurls(url)
-            if not urls:
+            if len(urls) < 2:
                 return
             await message.channel.send("2枚目以降の画像:\n" + "\n".join(urls[1:]))
         return
