@@ -20,7 +20,6 @@ from discord.ext.commands import Bot, Context, bot_has_permissions, command
 from custom import CustomCog
 
 AMAZON_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp\S*?/dp/\S{10}\S*")
-AMAZON_SHORTENED_URL_PATTERN = re.compile(r"https?://\S+?amazon\.co\.jp/dp/\S{10}")
 MESSAGE_LINK_PATTERN = re.compile(
     r"https?://.*?discordapp.com/channels/\d+/(\d+)/(\d+)"
 )
@@ -143,15 +142,7 @@ class AmazonShortLink(CustomCog):
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
             return
-        
-        amazon_urls = AMAZON_URL_PATTERN.findall(message.content)
-        if len(amazon_urls) == 0:
-            return
-        not_shortened_amazon_urls = []
-        for url in amazon_urls):
-            if AMAZON_SHORTENED_URL_PATETRN.fullmatch(url) != None:
-                not_shortened_amazon_urls.append(url)
-        if len(not_shortened_amazon_urls) == 0:
+        if AMAZON_URL_PATTERN.search(message.content) is None:
             return
 
         self.on_message_bot_has_permissions(
@@ -166,13 +157,13 @@ class AmazonShortLink(CustomCog):
         sender = message.author
         new_message = message.content
 
-        shortened_urls = []
+        shorten_urls = []
 
-        for url in not_shortened_amazon_urls:
-            shortened_url = self.get_shorten_url(url)
+        for url in AMAZON_URL_PATTERN.findall(message.content):
+            shorten_url = self.get_shorten_url(url)
             new_message = new_message.replace(url, shorten_url)
-            shortened_urls.append(shortened_url)
-        embeds = await self.generate_embeds(shortened_urls, sender.id)
+            shorten_urls.append(shorten_url)
+        embeds = await self.generate_embeds(shorten_urls, sender.id)
 
         await message.delete()
         await self.send_message(
