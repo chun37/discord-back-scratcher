@@ -176,8 +176,8 @@ class AmazonShortLink(CustomCog):
             shorten_urls.append(shorten_url)
         embeds = await self.generate_embeds(shorten_urls, sender.id)
 
-        if (ref := message.reference) and isinstance(
-            ref_message := ref.resolved, Message
+        if message.reference and isinstance(
+            ref_message := message.reference.resolved, Message
         ):
             new_message, reply_embeds = generate_reply_message(new_message, ref_message)
             embeds = reply_embeds + embeds
