@@ -33,6 +33,17 @@ def escape_markdown(text: str) -> str:
     return re.sub(r"([*_`~|])", r"\\\1", text)
 
 
+def generate_reply_message(
+    shorten_message: str, ref: Message
+) -> Tuple[str, List[Embed]]:
+    content = f"{ref.author.mention}\n{shorten_message}"
+    embed = Embed(description=ref.content, timestamp=ref.created_at)
+    embed.set_author(name=ref.author.name, icon_url=ref.author.avatar_url)
+    embed.set_footer(text=f"{ref.guild.name}, #{ref.channel.name}")
+    embeds = [embed]
+    return content, embeds
+
+
 class AmazonShortLink(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
@@ -138,16 +149,6 @@ class AmazonShortLink(CustomCog):
         embeds[-1].set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
         return embeds
 
-    def generate_reply_message(
-        self, shorten_message: str, ref: Message
-    ) -> Tuple[str, List[Embed]]:
-        content = f"{ref.author.mention}\n{shorten_message}"
-        embed = Embed(description=ref.content, timestamp=ref.created_at)
-        embed.set_author(name=ref.author.name, icon_url=ref.author.avatar_url)
-        embed.set_footer(text=f"{ref.guild.name}, #{ref.channel.name}")
-        embeds = [embed]
-        return content, embeds
-
     @CustomCog.listener()
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
@@ -178,9 +179,7 @@ class AmazonShortLink(CustomCog):
         if (ref := message.reference) and isinstance(
             ref_message := ref.resolved, Message
         ):
-            new_message, reply_embeds = self.generate_reply_message(
-                new_message, ref_message
-            )
+            new_message, reply_embeds = generate_reply_message(new_message, ref_message)
             embeds = reply_embeds + embeds
 
         await message.delete()
