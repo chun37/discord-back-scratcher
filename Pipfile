@@ -15,7 +15,7 @@ bs4 = "==0.0.1"
 "discord.py" = {extras = ["voice"],version = "~=1.3"}
 lxml = "*"
 tweepy = "*"
-typedjson = "==0.8.0"
+typedjson = "==0.10.3"
 typing-extensions = "==3.7.4.3"
 
 [scripts]
