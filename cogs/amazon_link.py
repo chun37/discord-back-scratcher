@@ -177,8 +177,7 @@ class AmazonShortLink(CustomCog):
         embeds = await self.generate_embeds(shorten_urls, sender.id)
 
         if (ref := message.reference) and isinstance(
-            ref_message := ref.resolved,  # pylint: disable=used-before-assignment
-            Message,
+            ref_message := ref.resolved, Message
         ):
             new_message, reply_embeds = generate_reply_message(new_message, ref_message)
             embeds = reply_embeds + embeds
