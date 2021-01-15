@@ -1,6 +1,6 @@
 import json
 import re
-from typing import List
+from typing import List, Tuple
 from urllib.parse import urlparse
 
 import aiohttp
@@ -31,6 +31,17 @@ class OwnershipError(Exception):
 
 def escape_markdown(text: str) -> str:
     return re.sub(r"([*_`~|])", r"\\\1", text)
+
+
+def generate_reply_message(
+    shorten_message: str, ref: Message
+) -> Tuple[str, List[Embed]]:
+    content = f"{ref.author.mention}\n{shorten_message}"
+    embed = Embed(description=ref.content, timestamp=ref.created_at)
+    embed.set_author(name=ref.author.name, icon_url=ref.author.avatar_url)
+    embed.set_footer(text=f"{ref.guild.name}, #{ref.channel.name}")
+    embeds = [embed]
+    return content, embeds
 
 
 class AmazonShortLink(CustomCog):
@@ -164,6 +175,12 @@ class AmazonShortLink(CustomCog):
             new_message = new_message.replace(url, shorten_url)
             shorten_urls.append(shorten_url)
         embeds = await self.generate_embeds(shorten_urls, sender.id)
+
+        if message.reference and isinstance(
+            ref_message := message.reference.resolved, Message
+        ):
+            new_message, reply_embeds = generate_reply_message(new_message, ref_message)
+            embeds = reply_embeds + embeds
 
         await message.delete()
         await self.send_message(
