@@ -1,6 +1,6 @@
 import json
 import re
-from typing import List
+from typing import List, Tuple
 from urllib.parse import urlparse
 
 import aiohttp
@@ -138,6 +138,16 @@ class AmazonShortLink(CustomCog):
         embeds[-1].set_footer(text=f"edited by {self.bot.user.name}, 発言者: {author_id}")
         return embeds
 
+    def generate_reply_message(
+        self, shorten_message: str, ref: Message
+    ) -> Tuple[str, List[Embed]]:
+        content = f"{ref.author.mention}\n{shorten_message}"
+        embed = Embed(description=ref.content, timestamp=ref.created_at)
+        embed.set_author(name=ref.author.name, icon_url=ref.author.avatar_url)
+        embed.set_footer(text=f"{ref.guild.name}, #{ref.channel.name}")
+        embeds = [embed]
+        return content, embeds
+
     @CustomCog.listener()
     async def on_message(self, message: Message) -> None:
         if message.author.bot:
@@ -164,6 +174,14 @@ class AmazonShortLink(CustomCog):
             new_message = new_message.replace(url, shorten_url)
             shorten_urls.append(shorten_url)
         embeds = await self.generate_embeds(shorten_urls, sender.id)
+
+        if (ref := message.reference) and isinstance(
+            ref_message := ref.resolved, Message
+        ):
+            new_message, reply_embeds = self.generate_reply_message(
+                new_message, ref_message
+            )
+            embeds = reply_embeds + embeds
 
         await message.delete()
         await self.send_message(
