@@ -16,6 +16,7 @@ INITIAL_COGS = [
     "cogs.amazon_link",
     "cogs.check",
     "cogs.choose",
+    "cogs.delete_message",
     "cogs.echo",
     "cogs.end",
     "cogs.invite",
