@@ -5,6 +5,7 @@ import traceback
 from typing import Any
 
 import dotenv
+from discord import Permissions
 from discord.ext.commands import Bot, BotMissingPermissions, when_mentioned_or
 
 from utils import permissions_to_error_text
@@ -17,6 +18,7 @@ INITIAL_COGS = [
     "cogs.choose",
     "cogs.echo",
     "cogs.end",
+    "cogs.invite",
     "cogs.restart",
     "cogs.sticker",
     "cogs.tweet_image",
@@ -27,6 +29,15 @@ INITIAL_COGS = [
 
 class MyBot(Bot):
     def __init__(self) -> None:
+        self.permissions = Permissions(
+            view_channel=True,
+            send_messages=True,
+            manage_messages=True,
+            embed_links=True,
+            read_message_history=True,
+            manage_webhooks=True,
+            add_reactions=True,
+        )
         super().__init__(command_prefix=when_mentioned_or("?"))
         for cog in INITIAL_COGS:
             try:
