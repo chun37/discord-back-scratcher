@@ -1,5 +1,5 @@
 from discord import Message, RawReactionActionEvent, TextChannel
-from discord.ext.commands import Bot, command
+from discord.ext.commands import Bot
 
 from custom import CustomCog
 
