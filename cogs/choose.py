@@ -1,5 +1,4 @@
 import random
-from typing import Tuple
 
 from discord.ext.commands import Bot, Context, command
 
@@ -11,7 +10,7 @@ class Choose(CustomCog):
         self.bot = bot
 
     @command(aliases=["random"])
-    async def choose_one_from(self, ctx: Context, *options: Tuple[str]) -> None:
+    async def choose_one_from(self, ctx: Context, *options: str) -> None:
         """複数の選択肢の中から1つ選びます"""
         result = random.choice(options)
         await ctx.send(result)
