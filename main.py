@@ -19,6 +19,7 @@ INITIAL_COGS = [
     "cogs.delete_message",
     "cogs.echo",
     "cogs.end",
+    "cogs.github_link",
     "cogs.invite",
     "cogs.restart",
     "cogs.sticker",
