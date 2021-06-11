@@ -2,12 +2,12 @@
 
 import re
 from dataclasses import dataclass
+from io import StringIO
 from typing import Optional
 from urllib.parse import ParseResult, urlparse
-from io import StringIO
 
 import aiohttp
-from discord import Message, File
+from discord import File, Message
 from discord.ext.commands import Bot
 
 from custom import CustomCog
