@@ -134,6 +134,7 @@ class GitHubBlobLink(GitHubLink):
     async def get_code(self) -> str:
         async with aiohttp.ClientSession() as session:
             async with session.get(self.get_raw_link()) as response:
+                response.raise_for_status()
                 code = await response.text()
 
         cropped_code = self.crop_code(code)
@@ -141,7 +142,10 @@ class GitHubBlobLink(GitHubLink):
         return cropped_code
 
     async def to_discord(self) -> Optional[File]:
-        code = await self.get_code()
+        try:
+            code = await self.get_code()
+        except aiohttp.ClientResponseError:
+            return None
         base_file_name = self.path.split("/")[-1]
         raw_extension = base_file_name.split(".")[-1].lower()
 
