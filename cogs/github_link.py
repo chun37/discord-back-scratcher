@@ -2,6 +2,7 @@
 
 import re
 from dataclasses import dataclass
+from enum import Enum
 from io import StringIO
 from typing import Optional
 from urllib.parse import ParseResult, urlparse
@@ -15,6 +16,58 @@ from custom import CustomCog
 GITHUB_LINK_PATTERN = re.compile(
     r"https?://github\.com/(?P<owner>[^/]+)/(?P<repository>[^/]+?)/(?P<type>[^/]+?)(?P<path>.+)"
 )
+
+
+class AllowedExtenisons(Enum):
+    PYTHON = "py"
+    RUBY = "rb"
+    YML = "yml"
+    YAML = "yaml"
+    VBS = "vbs"
+    VBA = "vba"
+    TS = "ts"
+    TSX = "tsx"
+    THRIFT = "thrift"
+    SWIFT = "swift"
+    SQL = "sql"
+    SCSS = "scss"
+    RUST = "rs"
+    TEXT = "txt"
+    PERL = "pl"
+    PHP = "php"
+    OBJECTIVE_C = "objc"
+    MARKDOWN = "md"
+    MAKE = "make"
+    LUA = "lua"
+    TEX = "tex"
+    KOTLIN = "kt"
+    JAVASCRIPT = "js"
+    JSX = "jsx"
+    JAVA = "java"
+    JSON = "json"
+    TOML = "toml"
+    INI = "ini"
+    HASKELL = "hs"
+    SVG = "svg"
+    PLIST = "plist"
+    RSS = "rss"
+    XHTML = "xhtml"
+    HTML = "html"
+    XML = "xml"
+    GOLANG = "go"
+    ELM = "elm"
+    DIFF = "diff"
+    BAT = "bat"
+    CSV = "csv"
+    CSS = "css"
+    CPP = "cpp"
+    C = "c"
+    H = "h"
+    CS = "cs"
+    BRAINFUCH = "bf"
+    SHELL = "sh"
+    ASCIIDOC = "asciidoc"
+    APPLESCRIPT = "applescript"
 
 
 @dataclass
@@ -88,9 +141,15 @@ class GitHubBlobLink(GitHubLink):
 
     async def to_discord(self) -> Optional[File]:
         code = await self.get_code()
-        file_name = self.path.split("/")[-1]
-        if "." not in file_name:
-            file_name += ".txt"
+        base_file_name = self.path.split("/")[-1]
+        raw_extension = base_file_name.split(".")[-1].lower()
+
+        try:
+            AllowedExtenisons(raw_extension)
+            file_name = base_file_name
+        except ValueError:
+            file_name = base_file_name + ".txt"
+
         return File(StringIO(code), file_name)
 
 
