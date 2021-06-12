@@ -18,6 +18,7 @@ GITHUB_LINK_PATTERN = re.compile(
 )
 
 
+# とりあえず雑に書いたので、後で追加する必要ありそう
 class AllowedExtenisons(Enum):
     PYTHON = "py"
     RUBY = "rb"
