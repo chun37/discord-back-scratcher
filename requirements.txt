@@ -27,7 +27,7 @@ requests-oauthlib==1.3.0
 requests[socks]==2.25.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
 six==1.16.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 soupsieve==2.2.1; python_version >= '3.0'
-tweepy==3.10.0
+tweepy==4.9.0
 typedjson==0.8.0
 typing-extensions==3.7.4.3
 urllib3==1.26.5; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'
