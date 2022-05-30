@@ -63,6 +63,8 @@ class TweetImage(CustomCog):
 
     @CustomCog.listener()
     async def on_message(self, message: Message) -> None:
+        if message.author.bot:
+            return
         if TWEET_URL_PATTERN.search(message.content) is None:
             return
         for url in TWEET_URL_PATTERN.findall(message.content):
