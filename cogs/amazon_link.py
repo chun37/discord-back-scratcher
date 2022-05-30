@@ -192,7 +192,7 @@ class AmazonShortLink(CustomCog):
 
     async def delete_message_from_channel(
         self, ctx: Context, channel: TextChannel, message_id: int
-    ) -> None:  # ここ raise してるし、Optional[NoRerutn] のはずなんだけど…
+    ) -> None:  # ここ raise してるし、Optional[NoReturn] のはずなんだけど…
         try:
             message = await channel.fetch_message(message_id)
         except (Forbidden, NotFound):
