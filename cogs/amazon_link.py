@@ -48,8 +48,8 @@ class AmazonShortLink(CustomCog):
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
+    @staticmethod
     async def send_message(
-        self,
         text: str,
         user: User,
         webhook_url: str,
@@ -90,9 +90,8 @@ class AmazonShortLink(CustomCog):
 
         return shorten_url
 
-    async def create_amazon_embed(
-        self, session: aiohttp.ClientSession, url: str
-    ) -> Embed:
+    @staticmethod
+    async def create_amazon_embed(session: aiohttp.ClientSession, url: str) -> Embed:
         async with session.get(url) as response:
             if response.status != 200:
                 print(f"取得Error {url}")
@@ -192,7 +191,7 @@ class AmazonShortLink(CustomCog):
 
     async def delete_message_from_channel(
         self, ctx: Context, channel: TextChannel, message_id: int
-    ) -> None:  # ここ raise してるし、Optional[NoRerutn] のはずなんだけど…
+    ) -> None:  # ここ raise してるし、Optional[NoReturn] のはずなんだけど…
         try:
             message = await channel.fetch_message(message_id)
         except (Forbidden, NotFound):

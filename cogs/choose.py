@@ -1,4 +1,5 @@
 import random
+from typing import Sequence
 
 from discord.ext.commands import Bot, Context, command
 
@@ -12,6 +13,10 @@ class Choose(CustomCog):
     @command(aliases=["random"])
     async def choose_one_from(self, ctx: Context, *options: str) -> None:
         """複数の選択肢の中から1つ選びます"""
+        await self._choose_one_from(ctx, options)
+
+    @staticmethod
+    async def _choose_one_from(ctx: Context, options: Sequence[str]) -> None:
         result = random.choice(options)
         await ctx.send(result)
 
