@@ -12,6 +12,10 @@ class Reminder(CustomCog):
     @command()
     async def remind(self, ctx: Context, after: int = 0, text: str = "") -> None:
         """リマインダー(メンションします)"""
+        await self._remind(ctx, after, text)
+
+    @staticmethod
+    async def _remind(ctx: Context, after: int, text: str) -> None:
         await asyncio.sleep(after)
         await ctx.send(f"{ctx.author.mention} {text}")
 

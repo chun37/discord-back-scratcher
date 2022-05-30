@@ -9,6 +9,10 @@ class Echo(CustomCog):
 
     @command()
     async def echo(self, ctx: Context) -> None:
+        await self._echo(ctx)
+
+    @staticmethod
+    async def _echo(ctx: Context) -> None:
         await ctx.send(ctx.message.content[6:])
 
 
