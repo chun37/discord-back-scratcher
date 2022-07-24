@@ -19,6 +19,7 @@ INITIAL_COGS = [
     "cogs.delete_message",
     "cogs.echo",
     "cogs.end",
+    "cogs.github_link",
     "cogs.invite",
     "cogs.restart",
     "cogs.sticker",
@@ -38,6 +39,7 @@ class MyBot(Bot):
             read_message_history=True,
             manage_webhooks=True,
             add_reactions=True,
+            attach_files=True,
         )
         super().__init__(command_prefix=when_mentioned_or("?"))
         for cog in INITIAL_COGS:
